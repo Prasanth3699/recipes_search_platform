@@ -1,74 +1,12 @@
-# OpenSearch Recipe Indexing Script
+# Full Stack Recipe Search Platform (FastAPI + React.js) and Opensearch
 
-This project contains a Python script designed to index recipe data into an OpenSearch cluster. The dataset used is sourced from [Kaggle's Epicurious Recipes dataset](https://www.kaggle.com/datasets/hugodarwood/epirecipes), which provides a collection of recipes including information like ingredients, categories, calories, and ratings.
-
-## Requirements
-
-- Python 3.8+
-- Libraries:
-  - `opensearch-py`: For interacting with OpenSearch
-  - `python-dotenv`: For loading environment variables
-  - `json`: For loading recipe data
-- OpenSearch cluster instance
-
-### Python Packages
-
-You can install the required Python packages using:
-
-```bash
-pip install opensearch-py python-dotenv
-```
-
-## How It Works
-
-- Environment Setup: The script loads the OpenSearch connection details (host, port, username, and password) from a .env file using the python-dotenv library.
-  OpenSearch Client Initialization: The client is configured to connect securely to an OpenSearch cluster.
-- Index Mapping: A custom mapping is created for the epirecipes index, defining various fields such as title, ingredients, categories, and nutritional information.
-- Data Loading: The dataset is loaded from a JSON file, and the data is processed into individual documents.
-- Bulk Indexing: The documents are indexed in bulk into the OpenSearch cluster.
-- Environment Variables
-- Ensure that the following variables are set in your .env file:
-
-```bash
-OPENSEARCH_HOST=<your_opensearch_host>
-OPENSEARCH_PORT=<your_opensearch_port>
-OPENSEARCH_USERNAME=<your_opensearch_username>
-OPENSEARCH_PASSWORD=<your_opensearch_password>
-```
-
-### Dataset
-
-The dataset used in this script can be downloaded from Kaggle using the following link: [Epicurious Recipes dataset](https://www.kaggle.com/datasets/hugodarwood/epirecipes). Once downloaded, place the dataset in a data/ folder and ensure the path in the script matches.
-
-### Running the Script
-
-Once the environment is set up, you can run the script as follows:
-
-```bash
-python index_recipes.py
-```
-
-This will connect to the OpenSearch cluster and index all recipes from the dataset.
-
-## Additional Information
-
-- This script assumes the OpenSearch cluster is already running and accessible via the provided host and port.
-- It creates the index if it does not exist already.
-- For bulk indexing, the script uses the helpers.bulk method from opensearch-py.
-
-# Recipe Search API
-
-This is a FastAPI-based API that provides recipe search functionality. The API interacts with an OpenSearch instance to perform various search and filtering operations on a collection of recipes. It supports searching by query keywords, filtering by category, ingredients, and nutritional information, and retrieving available categories and ingredients from the dataset.
-
-# Full Stack Recipe Search Platform (FastAPI + Vite)
-
-This project consists of a **FastAPI** backend and a **Vite** frontend for a recipe search platform. This guide will help you clone the repository and set it up on your local machine.
+This is a FastAPI-based API that provides recipe search functionality. The API interacts with an OpenSearch instance to perform various search and filtering operations on a collection of recipes. It supports searching by query keywords, filtering by category, ingredients, and nutritional information, and retrieving available categories and ingredients from the dataset. This project consists of a **FastAPI** backend and a **React.js** frontend for a recipe search platform. This guide will help you clone the repository and set it up on your local machine.
 
 ## Features
 
 - **Search Recipes**: Search for recipes using keywords in titles, ingredients, or instructions, with additional filters such as categories, ingredients, ratings, and protein content.
 - **Filter by Categories**: Retrieve a list of unique categories from the dataset.
-- **Filter by Ingredients**: Retrieve a list of unique ingredients from the dataset.
+- **Filter by Ratings**: Retrieve a list baed on the ratings from the dataset.
 - **Pagination**: Supports pagination for search results.
 
 ## Prerequisites
@@ -78,16 +16,78 @@ Make sure you have the following installed:
 - **Python 3.8+**
 - **Node.js** and **npm** (or **yarn**)
 - **Git**
-
-## Step-by-Step Setup Instructions
+- **OpenSearch**
 
 ### 1. Clone the Repository
 
 1. Clone the repository to your local machine:
    ```bash
-   git clone <repository_url>
-   cd <repository_name>
+   git clone https://github.com/Prasanth3699/recipes_search_platform
+   cd recipes_search_platform
    ```
+2. Create a virtual environment and activate it:
+
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate  # On Windows, use 'venv\\Scripts\\activate'
+   ```
+
+3. Navigate to the backend folder:
+
+   ```bash
+   cd backend
+   ```
+
+4. Install the required dependencies:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+5. Creat an **.env** file with the necessary environment variables
+   ```bash
+   OPENSEARCH_HOST=<your_opensearch_host>
+   OPENSEARCH_PORT=<your_opensearch_port>
+   OPENSEARCH_USERNAME=<your_opensearch_username>
+   OPENSEARCH_PASSWORD=<your_opensearch_password>
+   ```
+
+## Setup OpenSearch Script
+
+This part contains a Python script designed to index recipe data into an OpenSearch cluster. The dataset used is sourced from [Kaggle's Epicurious Recipes dataset](https://www.kaggle.com/datasets/hugodarwood/epirecipes), which provides a collection of recipes including information like ingredients, categories, calories, and ratings.
+
+## Requirement
+
+- OpenSearch cluster instance
+
+### Dataset
+
+The dataset used in this script can be downloaded from Kaggle using the following link: [Epicurious Recipes dataset](https://www.kaggle.com/datasets/hugodarwood/epirecipes). Once downloaded, place the dataset in a `data/epirecipes` folder and ensure the path in the script matches.
+
+### Running the Script
+
+Once the environment is set up, you can run the script as follows:
+Below file contains on Scripts folder
+
+```bash
+python index_data.py
+```
+
+This will connect to the OpenSearch cluster and index all recipes from the dataset.
+
+## How It Works
+
+- Environment Setup: The script loads the OpenSearch connection details (host, port, username, and password) from a .env file using the python-dotenv library.
+  OpenSearch Client Initialization: The client is configured to connect securely to an OpenSearch cluster.
+- Index Mapping: A custom mapping is created for the epirecipes index, defining various fields such as title, ingredients, categories, and nutritional information.
+- Data Loading: The dataset is loaded from a JSON file, and the data is processed into individual documents.
+- Bulk Indexing: The documents are indexed in bulk into the OpenSearch cluster.
+
+## Additional Information
+
+- This script assumes the OpenSearch cluster is already running and accessible via the provided host and port.
+- It creates the index if it does not exist already.
+- For bulk indexing, the script uses the helpers.bulk method from opensearch-py.
 
 ### 2. Backend Setup (FastAPI)
 
@@ -97,31 +97,9 @@ Make sure you have the following installed:
    cd backend
    ```
 
-2. Create a virtual environment and activate it:
-
+2. Run the FastAPI backend:
    ```bash
-   python3 -m venv venv
-   source venv/bin/activate  # On Windows, use 'venv\\Scripts\\activate'
-   ```
-
-3. Install the required dependencies:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. Create an **.env** file with the necessary environment variables:
-
-   ```
-   OPENSEARCH_HOST=localhost
-   OPENSEARCH_PORT=9200
-   OPENSEARCH_USERNAME=admin
-   OPENSEARCH_PASSWORD=admin
-   ```
-
-5. Run the FastAPI backend:
-   ```bash
-   uvicorn main:app --reload
+   uvicorn app.main:app --reload
    ```
    The backend will be running on \`http://localhost:8000\`.
 
@@ -153,7 +131,7 @@ Make sure you have the following installed:
 
 ### 4. CORS Configuration for FastAPI
 
-To allow communication between the Vite frontend and FastAPI backend, add CORS middleware to the FastAPI app:
+To allow communication between the React frontend and FastAPI backend, add CORS middleware to the FastAPI app:
 
 In **main.py**:
 
@@ -163,7 +141,7 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 origins = [
-    "http://localhost:5173",  # Vite frontend URL
+    "http://localhost:5173",  # Frontend URL
 ]
 
 app.add_middleware(
@@ -181,7 +159,7 @@ app.add_middleware(
 
    ```bash
    cd backend
-   uvicorn main:app --reload
+   uvicorn app.main:app --reload
    ```
 
 2. **Start the frontend**:
