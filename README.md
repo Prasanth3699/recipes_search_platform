@@ -171,6 +171,8 @@ app.add_middleware(
 
 Now, your Vite-based React frontend will communicate with the FastAPI backend for recipe searching.
 
-### License
+## YouTube Link [![YouTube](https://img.shields.io/badge/YouTube-red?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/0-QUEUUmTTY)
 
-This project is licensed under the MIT License.
+[![Recipe Search Platform - YouTube](https://img.youtube.com/vi/0-QUEUUmTTY/0.jpg)](https://youtu.be/0-QUEUUmTTY)
+
+### Thank You

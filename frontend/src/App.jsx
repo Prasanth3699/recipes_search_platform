@@ -23,10 +23,12 @@ const App = () => {
   const [page, setPage] = useState(location.state?.page || 1);
   const [size] = useState(15);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null); // New error state
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
   const fetchRecipes = () => {
     setLoading(true);
+    setError(null); // Reset error state
     const params = new URLSearchParams();
 
     if (query) params.append("query", query);
@@ -43,7 +45,12 @@ const App = () => {
     params.append("size", size);
 
     fetch(`${apiBaseUrl}/search?${params.toString()}`)
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return res.json();
+      })
       .then((data) => {
         setRecipes(data.recipes);
         setTotal(data.total);
@@ -51,6 +58,7 @@ const App = () => {
       })
       .catch((err) => {
         console.error(err);
+        setError("An error occurred while fetching recipes.");
         setLoading(false);
       });
   };
@@ -110,14 +118,31 @@ const App = () => {
             path="/"
             element={
               <>
-                <SearchBar onSearch={handleSearch} />
+                {!error && <SearchBar onSearch={handleSearch} />}
                 <div className="flex flex-col lg:flex-row gap-6">
-                  <aside className="lg:w-1/4">
-                    <Filters onFilterChange={handleFilterChange} />
-                  </aside>
+                  {!error && (
+                    <aside className="lg:w-1/4">
+                      <Filters onFilterChange={handleFilterChange} />
+                    </aside>
+                  )}
                   <section className="lg:w-3/4">
                     {loading ? (
                       <p className="text-center text-gray-600">Loading...</p>
+                    ) : error ? (
+                      <div className="flex flex-col text-center items-center justify-center min-h-full">
+                        <img
+                          src="/Page-Not-Found-Error-404.png"
+                          alt="No recipes found"
+                          className="mx-auto mb-4 w-64 h-64"
+                        />
+                      </div>
+                    ) : recipes.length === 0 ? (
+                      <div className="text-center flex flex-col items-center justify-center min-h-full">
+                        <p className="text-gray-600">
+                          No recipes found. Try adjusting your search or
+                          filters.
+                        </p>
+                      </div>
                     ) : (
                       <>
                         <RecipeList recipes={recipes} />
@@ -136,9 +161,9 @@ const App = () => {
                           </span>
                           <button
                             onClick={handleNextPage}
-                            disabled={page === totalPages}
+                            disabled={page === totalPages || totalPages === 0}
                             className={`px-4 py-2 text-white bg-blue-500 rounded-lg shadow hover:bg-blue-600 transition-transform ${
-                              page === totalPages
+                              page === totalPages || totalPages === 0
                                 ? "opacity-50 cursor-not-allowed"
                                 : ""
                             }`}

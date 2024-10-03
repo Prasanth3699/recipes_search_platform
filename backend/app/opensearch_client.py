@@ -24,11 +24,6 @@ client = OpenSearch(
 index_name = 'epirecipes'
 
 
-# Get the total count of documents in the index
-response = client.count(index=index_name)
-print(response)
-# Extract and print the total count of documents
-total_count = response['count']
-print(f"Total documents in {index_name}: {total_count}")
+
 
 

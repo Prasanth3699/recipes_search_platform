@@ -28,7 +28,7 @@ def search_recipes(
     min_protein: Optional[int] = Query(None, description="Minimum protein"),
     max_protein: Optional[int] = Query(None, description="Maximum protein"),
     page: int = Query(1, ge=1, description="Page number"),
-    size: int = Query(10, ge=1, le=100, description="Number of results per page"),
+    size: int = Query(15, ge=1, le=100, description="Number of results per page"),
 ):
     body = {
         "from": (page - 1) * size,
@@ -153,8 +153,8 @@ def get_ingredients():
         "aggs": {
             "unique_ingredients": {
                 "terms": {
-                    "field": "ingredients.keyword",  
-                    "size": 1000  
+                    "field": "ingredients.text",  
+                    "size": 100
                 }
             }
         }
@@ -163,6 +163,7 @@ def get_ingredients():
     try:
         # Perform the search request to OpenSearch
         response = client.search(body=body, index="epirecipes")
+        print(response)
 
         # Extract the aggregation buckets from the response
         buckets = response['aggregations']['unique_ingredients']['buckets']
